@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,6 +32,16 @@ class Contact
      * @ORM\Column(type="string", length=255)
      */
     private $secondMail;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="cat_id")
+     */
+    private $Users;
+
+    public function __construct()
+    {
+        $this->Users = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -68,6 +80,37 @@ class Contact
     public function setSecondMail(string $secondMail): self
     {
         $this->secondMail = $secondMail;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->Users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->Users->contains($user)) {
+            $this->Users[] = $user;
+            $user->setCatId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->Users->contains($user)) {
+            $this->Users->removeElement($user);
+            // set the owning side to null (unless already changed)
+            if ($user->getCatId() === $this) {
+                $user->setCatId(null);
+            }
+        }
 
         return $this;
     }

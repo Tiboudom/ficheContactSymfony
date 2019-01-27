@@ -41,6 +41,12 @@ class User
      */
     private $text;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Contact", inversedBy="Users")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $cat_id;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -102,6 +108,18 @@ class User
     public function setText(string $text): self
     {
         $this->text = $text;
+
+        return $this;
+    }
+
+    public function getCatId(): ?Contact
+    {
+        return $this->cat_id;
+    }
+
+    public function setCatId(?Contact $cat_id): self
+    {
+        $this->cat_id = $cat_id;
 
         return $this;
     }
